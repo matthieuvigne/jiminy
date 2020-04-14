@@ -154,6 +154,11 @@ namespace python
             return *outPtr_;
         }
 
+        void operator() (InputArgs const & ... argsIn, OutputArg & argOut)
+        {
+            argOut = operator()(argsIn...);
+        }
+
     private:
         bp::object funcPyPtr_;
         OutputArg * outPtr_;
