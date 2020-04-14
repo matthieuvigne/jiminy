@@ -13,6 +13,7 @@
 #include "jiminy/core/robot/BasicMotors.h"
 #include "jiminy/core/robot/BasicSensors.h"
 #include "jiminy/core/robot/FixedFrameConstraint.h"
+#include "jiminy/core/robot/FunctorConstraint.h"
 #include "jiminy/core/control/ControllerFunctor.h"
 #include "jiminy/core/telemetry/TelemetryData.h"
 #include "jiminy/core/Types.h"
@@ -672,6 +673,15 @@ namespace python
             PyConstraintVisit<PyClass>::visit(cl);
         }
 
+        static std::shared_ptr<FunctorConstraint> makeFunctorConstraint(bp::object const & jacobian,
+                                                                        bp::object const & drift,
+                                                                        uint32_t const & size)
+        {
+            FctPyWrapper<void, Eigen::Ref<vectorN_t const>, matrixN_t &> jac(jacobian);
+            FctPyWrapper<void, Eigen::Ref<vectorN_t const>, Eigen::Ref<vectorN_t const>, vectorN_t &> dr(drift);
+            return std::make_shared<FunctorConstraint>(std::move(jac), std::move(dr), s);
+        }
+
         ///////////////////////////////////////////////////////////////////////////////
         /// \brief Expose.
         ///////////////////////////////////////////////////////////////////////////////
@@ -686,6 +696,13 @@ namespace python
                        std::shared_ptr<FixedFrameConstraint>,
                        boost::noncopyable>("FixedFrameConstraint", bp::init<std::string>())
                 .def(PyConstraintVisitor());
+
+            bp::class_<FunctorConstraint, bp::bases<AbstractConstraint>,
+                       std::shared_ptr<FunctorConstraint>,
+                       boost::noncopyable>("FunctorConstraint", bp::no_init)
+                .def("__init__", bp::make_constructor(&makeFunctorConstraint,
+                                 bp::default_call_policies(),
+                                (bp::arg("jacobian"), "drift", "size")));
         }
     };
 
@@ -1279,6 +1296,13 @@ namespace python
         using CtrlFunctor = ControllerFunctor<ControllerFctWrapper, ControllerFctWrapper>;
 
     public:
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+        static std::shared_ptr<CtrlFunctor> ControllerFunctorPyFactory(bp::object & commandPy,
+                                                                       bp::object & internalDynamicsPy)
+=======
+>>>>>>> Stashed changes
         ///////////////////////////////////////////////////////////////////////////////
         /// \brief Expose C++ API through the visitor.
         ///////////////////////////////////////////////////////////////////////////////
@@ -1294,6 +1318,10 @@ namespace python
 
         static std::shared_ptr<CtrlFunctor> factory(bp::object & commandPy,
                                                     bp::object & internalDynamicsPy)
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         {
             ControllerFctWrapper commandFct(commandPy);
             ControllerFctWrapper internalDynamicsFct(internalDynamicsPy);
@@ -1301,6 +1329,18 @@ namespace python
                                                  std::move(internalDynamicsFct));
         }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+        static void initialize(CtrlFunctor                  & self,
+                               std::shared_ptr<Robot> const & robot)
+        {
+            self.initialize(robot.get());
+        }
+
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         ///////////////////////////////////////////////////////////////////////////////
         /// \brief Expose.
         ///////////////////////////////////////////////////////////////////////////////
